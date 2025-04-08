@@ -155,6 +155,7 @@ void Application::CheckNewVersion() {
 
         SetDeviceState(kDeviceStateIdle);
         display->SetChatMessage("system", "");
+        display->SetFaceHide(false);
         PlaySound(Lang::Sounds::P3_SUCCESS);
         // Exit the loop if upgrade or idle
         break;

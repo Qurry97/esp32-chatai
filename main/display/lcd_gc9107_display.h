@@ -71,7 +71,7 @@ public:
     ~LcdGc9107Display();
     bool logo_show_status = false;
     lv_obj_t* logo_img_ = nullptr;
-    lv_obj_t* face_img_ = nullptr;
+    
     int current_logo_index_ = 0;
     int current_face_index_ =0;
     int current_face_count_ =0;

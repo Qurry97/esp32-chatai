@@ -21,8 +21,9 @@ Display::Display() {
             Display *display = static_cast<Display*>(arg);
             DisplayLockGuard lock(display);
             lv_obj_add_flag(display->notification_label_, LV_OBJ_FLAG_HIDDEN);
-            lv_obj_clear_flag(display->status_label_, LV_OBJ_FLAG_HIDDEN);
-        },
+            if (display->status_label_ != nullptr)
+                lv_obj_clear_flag(display->status_label_, LV_OBJ_FLAG_HIDDEN);
+        }, 
         .arg = this,
         .dispatch_method = ESP_TIMER_TASK,
         .name = "notification_timer",
@@ -65,11 +66,23 @@ Display::~Display() {
 
     if (network_label_ != nullptr) {
         lv_obj_del(network_label_);
+    }
+    if (notification_label_ != nullptr) {
         lv_obj_del(notification_label_);
+    }
+    if (status_label_ != nullptr) {
         lv_obj_del(status_label_);
+    }
+    if (mute_label_ != nullptr) {
         lv_obj_del(mute_label_);
+    }
+    if (battery_label_ != nullptr) {
         lv_obj_del(battery_label_);
+    }
+    if (emotion_label_ != nullptr) {
         lv_obj_del(emotion_label_);
+    }
+    if (vol_arc_ != nullptr) {
         lv_obj_del(vol_arc_);
         lv_obj_del(vol_label_);
     }
@@ -100,7 +113,8 @@ void Display::ShowNotification(const char* notification, int duration_ms) {
     }
     lv_label_set_text(notification_label_, notification);
     lv_obj_clear_flag(notification_label_, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_add_flag(status_label_, LV_OBJ_FLAG_HIDDEN);
+    if (status_label_ != nullptr)
+        lv_obj_add_flag(status_label_, LV_OBJ_FLAG_HIDDEN);
 
     esp_timer_stop(notification_timer_);
     ESP_ERROR_CHECK(esp_timer_start_once(notification_timer_, duration_ms * 1000));
@@ -109,23 +123,32 @@ void Display::ShowNotification(const char* notification, int duration_ms) {
 void Display::Update() {
     auto& board = Board::GetInstance();
     auto codec = board.GetAudioCodec();
+    if(!GetLogoStatus()){   //logo正在播放中
+            return;
+    }
+
     {
         DisplayLockGuard lock(this);
-        if (mute_label_ == nullptr) {
-            return;
-        }
-        if(!GetLogoStatus()){   //logo正在播放中
-            return;
-        }
-
         // 如果静音状态改变，则更新图标
-        if (codec->output_volume() == 0 && !muted_) {
-            muted_ = true;
-            lv_label_set_text(mute_label_, FONT_AWESOME_VOLUME_MUTE);
-        } else if (codec->output_volume() > 0 && muted_) {
-            muted_ = false;
-            lv_label_set_text(mute_label_, "");
+        if(mute_label_ != nullptr){
+            if (codec->output_volume() == 0 && !muted_) {
+                muted_ = true;
+                lv_label_set_text(mute_label_, FONT_AWESOME_VOLUME_MUTE);
+            } else if (codec->output_volume() > 0 && muted_) {
+                muted_ = false;
+                lv_label_set_text(mute_label_, "");
+            }
         }
+        
+    }
+    if(vol_arc_ !=nullptr){     //音量
+            if(vol_show_timer>0){
+                vol_show_timer--;
+            }else{
+                if (!lv_obj_has_flag(vol_arc_, LV_OBJ_FLAG_HIDDEN)) {
+                    lv_obj_add_flag(vol_arc_, LV_OBJ_FLAG_HIDDEN);
+                }
+            }
     }
 
     esp_pm_lock_acquire(pm_lock_);
@@ -167,16 +190,6 @@ void Display::Update() {
                 }
             }
         }
-
-        if(vol_arc_ !=nullptr){
-            if(vol_show_timer>0){
-                vol_show_timer--;
-            }else{
-                if (!lv_obj_has_flag(vol_arc_, LV_OBJ_FLAG_HIDDEN)) {
-                    lv_obj_add_flag(vol_arc_, LV_OBJ_FLAG_HIDDEN);
-                }
-            }
-        }
     }
 
     // 升级固件时，不读取 4G 网络状态，避免占用 UART 资源
@@ -196,12 +209,25 @@ void Display::Update() {
         }
     }
 
-    esp_pm_lock_release(pm_lock_);
+    esp_pm_lock_release(pm_lock_); 
 }
 
 void Display::SetFace(const char* emoji) 
 {
 
+}
+
+void Display::SetFaceHide(bool value) {
+    DisplayLockGuard lock(this);
+    if (face_img_ == nullptr) {
+        return;
+    }
+    if(value){
+        lv_obj_add_flag(face_img_, LV_OBJ_FLAG_HIDDEN);
+    }
+    else{
+        lv_obj_clear_flag(face_img_, LV_OBJ_FLAG_HIDDEN);
+    }
 }
 
 bool Display::GetLogoStatus() 
