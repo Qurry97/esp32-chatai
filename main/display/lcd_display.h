@@ -9,6 +9,32 @@
 
 #include <atomic>
 
+#define LOGO_TIMEOUT 120*1000    //us
+#define FACE_TIMEOUT 300*1000    //us
+enum {
+    NEUTRAL =0,
+    HAPPY,
+    LAUGHING,
+    FUNNY,
+    SAD,
+    ANGRY,
+    CRYING,
+    LOVING,
+    EMBARRAS,
+    SURPRISE,
+    SHOCKED,
+    THINKING,
+    WINKING,
+    COOL,
+    RELAXED,
+    DELICIOUS,
+    KISSY,
+    CONFIDENT,
+    SLEEPY,
+    SILLY,
+    CONFUSED
+};
+
 class LcdDisplay : public Display {
 protected:
     esp_lcd_panel_io_handle_t panel_io_ = nullptr;
@@ -19,10 +45,19 @@ protected:
     lv_obj_t* content_ = nullptr;
     lv_obj_t* container_ = nullptr;
     lv_obj_t* side_bar_ = nullptr;
-
+    
     DisplayFonts fonts_;
 
-    virtual void SetupUI();
+    
+    virtual void ShowLogo();
+    virtual void ShowFace(int index);
+    virtual void SetNeutral(int index);
+    virtual void SetHappy(int index);
+    virtual void SetSad(int index);
+    virtual void SetAngry(int index);
+    virtual void SetLoving(int index);
+    virtual void SetEmbarrass(int index);
+    virtual void SetDefault(int index);
     virtual bool Lock(int timeout_ms = 0) override;
     virtual void Unlock() override;
 
@@ -33,8 +68,21 @@ protected:
     
 public:
     ~LcdDisplay();
-    virtual void SetEmotion(const char* emotion) override;
-    virtual void SetIcon(const char* icon) override;
+    lv_obj_t* logo_img_ = nullptr;
+    lv_obj_t* face_img_ = nullptr;
+    int current_logo_index_ = 0;
+    int current_face_index_ =0;
+    int current_face_count_ =0;
+    int current_face_state_ =0;
+
+    esp_timer_handle_t logo_timer_ = nullptr;
+    esp_timer_handle_t face_timer_ = nullptr;
+
+    virtual void SetupUI();
+    virtual void SetLogoImg(int index);
+    void SetFace(const char* emoji) override;
+    // virtual void SetEmotion(const char* emotion) override;
+    // virtual void SetIcon(const char* icon) override;
 };
 
 // RGB LCD显示器

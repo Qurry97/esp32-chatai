@@ -201,6 +201,7 @@ void Application::Alert(const char* status, const char* message, const char* emo
     auto display = Board::GetInstance().GetDisplay();
     display->SetStatus(status);
     display->SetEmotion(emotion);
+    display->SetFace(emotion);
     display->SetChatMessage("system", message);
     if (!sound.empty()) {
         PlaySound(sound);
@@ -212,6 +213,7 @@ void Application::DismissAlert() {
         auto display = Board::GetInstance().GetDisplay();
         display->SetStatus(Lang::Strings::STANDBY);
         display->SetEmotion("neutral");
+        display->SetFace("neutral");
         display->SetChatMessage("system", "");
     }
 }
@@ -308,6 +310,34 @@ void Application::StopListening() {
             protocol_->SendStopListening();
             SetDeviceState(kDeviceStateIdle);
         }
+    });
+}
+
+void Application::VolUp() {
+    Schedule([this]() {
+        auto codec = Board::GetInstance().GetAudioCodec();
+        auto& board = Board::GetInstance();
+        auto display = board.GetDisplay();
+        int vol = codec->GetOutputVolume()+5;
+        if(vol >100){
+            vol = 100;
+        }
+        codec->SetOutputVolume(vol);
+        display->SetVolume(vol);
+    });
+}
+
+void Application::VolDown() {
+    Schedule([this]() {
+        auto codec = Board::GetInstance().GetAudioCodec();
+        auto& board = Board::GetInstance();
+        auto display = board.GetDisplay();
+        int vol = codec->GetOutputVolume()-5;
+        if(vol < 0){
+            vol = 0;
+        }
+        codec->SetOutputVolume(vol);
+        display->SetVolume(vol);
     });
 }
 
@@ -444,6 +474,7 @@ void Application::Start() {
             if (emotion != NULL) {
                 Schedule([this, display, emotion_str = std::string(emotion->valuestring)]() {
                     display->SetEmotion(emotion_str.c_str());
+                    display->SetFace(emotion_str.c_str());
                 });
             }
         } else if (strcmp(type->valuestring, "iot") == 0) {
@@ -736,6 +767,7 @@ void Application::SetDeviceState(DeviceState state) {
         case kDeviceStateIdle:
             display->SetStatus(Lang::Strings::STANDBY);
             display->SetEmotion("neutral");
+            display->SetFace("neutral");
 #if CONFIG_USE_AUDIO_PROCESSOR
             audio_processor_.Stop();
 #endif
@@ -743,11 +775,13 @@ void Application::SetDeviceState(DeviceState state) {
         case kDeviceStateConnecting:
             display->SetStatus(Lang::Strings::CONNECTING);
             display->SetEmotion("neutral");
+            display->SetFace("neutral");
             display->SetChatMessage("system", "");
             break;
         case kDeviceStateListening:
             display->SetStatus(Lang::Strings::LISTENING);
             display->SetEmotion("neutral");
+            display->SetFace("neutral");
             ResetDecoder();
             opus_encoder_->ResetState();
 #if CONFIG_USE_AUDIO_PROCESSOR

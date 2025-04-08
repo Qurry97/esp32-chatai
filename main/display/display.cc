@@ -70,6 +70,8 @@ Display::~Display() {
         lv_obj_del(mute_label_);
         lv_obj_del(battery_label_);
         lv_obj_del(emotion_label_);
+        lv_obj_del(vol_arc_);
+        lv_obj_del(vol_label_);
     }
 
     if (pm_lock_ != nullptr) {
@@ -107,10 +109,12 @@ void Display::ShowNotification(const char* notification, int duration_ms) {
 void Display::Update() {
     auto& board = Board::GetInstance();
     auto codec = board.GetAudioCodec();
-
     {
         DisplayLockGuard lock(this);
         if (mute_label_ == nullptr) {
+            return;
+        }
+        if(!GetLogoStatus()){   //logo正在播放中
             return;
         }
 
@@ -150,7 +154,7 @@ void Display::Update() {
         }
 
         if (low_battery_popup_ != nullptr) {
-            if (strcmp(icon, FONT_AWESOME_BATTERY_EMPTY) == 0 && discharging) {
+            if (strcmp(icon, FONT_AWESOME_BATTERY_EMPTY) == 0 && discharging && !charging) {
                 if (lv_obj_has_flag(low_battery_popup_, LV_OBJ_FLAG_HIDDEN)) { // 如果低电量提示框隐藏，则显示
                     lv_obj_clear_flag(low_battery_popup_, LV_OBJ_FLAG_HIDDEN);
                     auto& app = Application::GetInstance();
@@ -160,6 +164,16 @@ void Display::Update() {
                 // Hide the low battery popup when the battery is not empty
                 if (!lv_obj_has_flag(low_battery_popup_, LV_OBJ_FLAG_HIDDEN)) { // 如果低电量提示框显示，则隐藏
                     lv_obj_add_flag(low_battery_popup_, LV_OBJ_FLAG_HIDDEN);
+                }
+            }
+        }
+
+        if(vol_arc_ !=nullptr){
+            if(vol_show_timer>0){
+                vol_show_timer--;
+            }else{
+                if (!lv_obj_has_flag(vol_arc_, LV_OBJ_FLAG_HIDDEN)) {
+                    lv_obj_add_flag(vol_arc_, LV_OBJ_FLAG_HIDDEN);
                 }
             }
         }
@@ -185,6 +199,15 @@ void Display::Update() {
     esp_pm_lock_release(pm_lock_);
 }
 
+void Display::SetFace(const char* emoji) 
+{
+
+}
+
+bool Display::GetLogoStatus() 
+{
+    return true;
+}
 
 void Display::SetEmotion(const char* emotion) {
     struct Emotion {
@@ -240,6 +263,19 @@ void Display::SetIcon(const char* icon) {
         return;
     }
     lv_label_set_text(emotion_label_, icon);
+}
+
+void Display::SetVolume(int vol) {
+    DisplayLockGuard lock(this);
+    if (vol_arc_ == nullptr) {
+        return;
+    }
+    if (lv_obj_has_flag(vol_arc_, LV_OBJ_FLAG_HIDDEN)) { 
+        lv_obj_clear_flag(vol_arc_, LV_OBJ_FLAG_HIDDEN);
+    }
+    lv_arc_set_value(vol_arc_, vol);
+    lv_label_set_text_fmt(vol_label_,"%d",vol);
+    vol_show_timer = 3;
 }
 
 void Display::SetChatMessage(const char* role, const char* content) {

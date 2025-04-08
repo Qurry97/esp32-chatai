@@ -65,6 +65,8 @@ public:
     void ToggleChatState();
     void StartListening();
     void StopListening();
+    void VolUp();
+    void VolDown();
     void UpdateIotStates();
     void Reboot();
     void WakeWordInvoke(const std::string& wake_word);

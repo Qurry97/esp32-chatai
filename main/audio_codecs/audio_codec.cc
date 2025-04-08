@@ -82,6 +82,14 @@ void AudioCodec::SetOutputVolume(int volume) {
     settings.SetInt("output_volume", output_volume_);
 }
 
+int AudioCodec::GetOutputVolume() {
+    Settings settings("audio", false);
+    output_volume_ = settings.GetInt("output_volume", output_volume_);
+    ESP_LOGI(TAG, "Get output volume is %d", output_volume_);
+    
+    return output_volume_;
+}
+
 void AudioCodec::EnableInput(bool enable) {
     if (enable == input_enabled_) {
         return;

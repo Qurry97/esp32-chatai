@@ -17,6 +17,7 @@ public:
     virtual ~AudioCodec();
     
     virtual void SetOutputVolume(int volume);
+    virtual int GetOutputVolume();
     virtual void EnableInput(bool enable);
     virtual void EnableOutput(bool enable);
 

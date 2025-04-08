@@ -23,8 +23,12 @@ public:
     virtual void ShowNotification(const char* notification, int duration_ms = 3000);
     virtual void ShowNotification(const std::string &notification, int duration_ms = 3000);
     virtual void SetEmotion(const char* emotion);
+    virtual void SetFace(const char* emoji);
     virtual void SetChatMessage(const char* role, const char* content);
     virtual void SetIcon(const char* icon);
+    virtual void SetVolume(int vol);
+    virtual bool GetLogoStatus();
+    
 
     inline int width() const { return width_; }
     inline int height() const { return height_; }
@@ -44,6 +48,9 @@ protected:
     lv_obj_t *battery_label_ = nullptr;
     lv_obj_t* chat_message_label_ = nullptr;
     lv_obj_t* low_battery_popup_ = nullptr;
+    lv_obj_t* vol_arc_ = nullptr;
+    lv_obj_t* vol_label_ = nullptr;
+    int vol_show_timer = 0;
 
     const char* battery_icon_ = nullptr;
     const char* network_icon_ = nullptr;

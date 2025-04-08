@@ -51,7 +51,7 @@ config WEBSOCKET_ACCESS_TOKEN
 
 choice BOARD_TYPE
     prompt "Board Type"
-    default BOARD_TYPE_BREAD_COMPACT_WIFI
+    default BOARD_TYPE_ESP32_CHATAI
     help
         Board type. 开发板类型
     config BOARD_TYPE_BREAD_COMPACT_WIFI
@@ -66,6 +66,8 @@ choice BOARD_TYPE
         bool "面包板（WiFi+ LCD） ESP32 DevKit"
     config BOARD_TYPE_ESP32_CGC
         bool "ESP32 CGC"
+    config BOARD_TYPE_ESP32_CHATAI
+        bool "ESP32 CHATAI by Qurry"
     config BOARD_TYPE_ESP_BOX_3
         bool "ESP BOX 3"
     config BOARD_TYPE_ESP_BOX
