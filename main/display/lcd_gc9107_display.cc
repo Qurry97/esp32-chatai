@@ -183,27 +183,36 @@ void LcdGc9107Display::SetupUI() {
     lv_obj_set_style_bg_opa(screen, 255, 0);
     lv_obj_set_style_text_font(screen, fonts_.text_font, 0);
     lv_obj_set_style_text_color(screen, lv_color_white(), 0);
-    lv_obj_set_style_text_opa(screen, 200, 0);
+    lv_obj_set_style_text_opa(screen, 240, 0);
 
     /* Container */
     container_ = lv_obj_create(screen);
     lv_obj_set_size(container_, LV_HOR_RES, LV_VER_RES);
+    lv_obj_set_scrollbar_mode(container_, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_style_pad_gap(container_, 0, 0);
     lv_obj_set_style_border_width(container_, 0, 0);
     lv_obj_set_style_radius(container_, 0, 0);
     lv_obj_set_style_bg_color(container_,lv_color_black() ,0);
     lv_obj_set_style_bg_opa(container_, 255, 0);
 
+    face_img_ = lv_img_create(container_);
+    lv_img_set_src(face_img_, &neutral1);
+    lv_obj_set_width(face_img_, LV_SIZE_CONTENT);   /// 128
+    lv_obj_set_height(face_img_, LV_SIZE_CONTENT);    /// 64
+    lv_obj_set_align(face_img_, LV_ALIGN_CENTER);
+    lv_obj_add_flag(face_img_, LV_OBJ_FLAG_ADV_HITTEST);     /// Flags
+    lv_obj_add_flag(face_img_, LV_OBJ_FLAG_HIDDEN);
+
     /* Status bar */
     status_bar_ = lv_obj_create(container_);
     lv_obj_set_style_bg_color(status_bar_,lv_color_black() ,0);
     lv_obj_set_style_bg_opa(status_bar_, 20, 0);
-    lv_obj_set_size(status_bar_,  LV_PCT(15),LV_VER_RES);
+    lv_obj_set_size(status_bar_,  LV_PCT(20),LV_VER_RES);
     lv_obj_set_style_radius(status_bar_, 0, 0);
     lv_obj_set_style_border_width(status_bar_, 0, 0);
     lv_obj_set_align(status_bar_, LV_ALIGN_LEFT_MID);
     lv_obj_set_flex_flow(status_bar_, LV_FLEX_FLOW_COLUMN);
-    lv_obj_set_style_pad_all(status_bar_, 0, 0);
-    lv_obj_set_style_pad_column(status_bar_, 0, 0);
+    lv_obj_set_style_pad_gap(status_bar_, 0, 0);
     lv_obj_set_style_pad_top(status_bar_, 2, 0);
     lv_obj_set_style_pad_bottom(status_bar_, 2, 0);
 
@@ -211,16 +220,13 @@ void LcdGc9107Display::SetupUI() {
     lv_label_set_text(network_label_, "");
     lv_obj_set_style_text_font(network_label_, fonts_.icon_font, 0);
 
-    // mute_label_ = lv_label_create(status_bar_);
-    // lv_label_set_text(mute_label_, "");
-    // lv_obj_set_style_text_font(mute_label_, fonts_.icon_font, 0);
-
     battery_label_ = lv_label_create(status_bar_);
     lv_label_set_text(battery_label_, "");
     lv_obj_set_style_text_font(battery_label_, fonts_.icon_font, 0);
 
-    notification_label_ = lv_label_create(lv_layer_top());
-    lv_obj_set_style_border_width(notification_label_, 2, 0);
+    notification_label_ = lv_label_create(container_);
+    lv_obj_set_style_border_color(notification_label_,lv_color_white() ,0);
+    lv_obj_set_style_border_width(notification_label_, 1, 0);
     lv_obj_set_scrollbar_mode(notification_label_, LV_SCROLLBAR_MODE_OFF);
     lv_obj_set_size(notification_label_, LV_HOR_RES * 0.8, fonts_.text_font->line_height);
     lv_obj_align(notification_label_, LV_ALIGN_CENTER, 0, 0);
@@ -233,22 +239,7 @@ void LcdGc9107Display::SetupUI() {
     // lv_label_set_long_mode(status_label_, LV_LABEL_LONG_SCROLL_CIRCULAR);
     // lv_obj_set_style_text_align(status_label_, LV_TEXT_ALIGN_CENTER, 0);
     // lv_label_set_text(status_label_, Lang::Strings::INITIALIZING);
-    
-    /* Content */
-    content_ = lv_obj_create(screen);
-    lv_obj_set_scrollbar_mode(content_, LV_SCROLLBAR_MODE_OFF);
-    lv_obj_set_style_radius(content_, 0, 0);
-    lv_obj_set_style_border_width(content_, 0, 0);
-    lv_obj_set_style_bg_opa(content_, 0, 0);
-    lv_obj_set_size(content_, LV_HOR_RES, LV_VER_RES);
 
-    face_img_ = lv_img_create(content_);
-    lv_img_set_src(face_img_, &neutral1);
-    lv_obj_set_width(face_img_, LV_SIZE_CONTENT);   /// 128
-    lv_obj_set_height(face_img_, LV_SIZE_CONTENT);    /// 64
-    lv_obj_set_align(face_img_, LV_ALIGN_CENTER);
-    lv_obj_add_flag(face_img_, LV_OBJ_FLAG_ADV_HITTEST);     /// Flags
-    lv_obj_add_flag(face_img_, LV_OBJ_FLAG_HIDDEN);
     
     low_battery_popup_ = lv_obj_create(screen);
     lv_obj_set_scrollbar_mode(low_battery_popup_, LV_SCROLLBAR_MODE_OFF);

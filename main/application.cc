@@ -124,7 +124,7 @@ void Application::CheckNewVersion() {
                 });
 
                 // If upgrade success, the device will reboot and never reach here
-                display->SetStatus(Lang::Strings::UPGRADE_FAILED);
+                display->ShowNotification(Lang::Strings::UPGRADE_FAILED);
                 ESP_LOGI(TAG, "Firmware upgrade failed...");
                 vTaskDelay(pdMS_TO_TICKS(3000));
                 Reboot();
@@ -200,7 +200,7 @@ void Application::ShowActivationCode() {
 void Application::Alert(const char* status, const char* message, const char* emotion, const std::string_view& sound) {
     ESP_LOGW(TAG, "Alert %s: %s [%s]", status, message, emotion);
     auto display = Board::GetInstance().GetDisplay();
-    display->SetStatus(status);
+    display->ShowNotification(status);
     display->SetEmotion(emotion);
     display->SetFace(emotion);
     display->SetChatMessage("system", message);
@@ -212,7 +212,7 @@ void Application::Alert(const char* status, const char* message, const char* emo
 void Application::DismissAlert() {
     if (device_state_ == kDeviceStateIdle) {
         auto display = Board::GetInstance().GetDisplay();
-        display->SetStatus(Lang::Strings::STANDBY);
+        display->ShowNotification(Lang::Strings::STANDBY);
         display->SetEmotion("neutral");
         display->SetFace("neutral");
         display->SetChatMessage("system", "");
@@ -391,7 +391,7 @@ void Application::Start() {
     board.StartNetwork();
 
     // Initialize the protocol
-    display->SetStatus(Lang::Strings::LOADING_PROTOCOL);
+    display->ShowNotification(Lang::Strings::LOADING_PROTOCOL);
 #ifdef CONFIG_CONNECTION_TYPE_WEBSOCKET
     protocol_ = std::make_unique<WebsocketProtocol>();
 #else
@@ -590,7 +590,7 @@ void Application::OnClockTimer() {
                     time_t now = time(NULL);
                     char time_str[64];
                     strftime(time_str, sizeof(time_str), "%H:%M  ", localtime(&now));
-                    Board::GetInstance().GetDisplay()->SetStatus(time_str);
+                    // Board::GetInstance().GetDisplay()->ShowNotification(time_str);
                 });
             }
         }
@@ -766,7 +766,7 @@ void Application::SetDeviceState(DeviceState state) {
     switch (state) {
         case kDeviceStateUnknown:
         case kDeviceStateIdle:
-            display->SetStatus(Lang::Strings::STANDBY);
+            display->ShowNotification(Lang::Strings::STANDBY);
             display->SetEmotion("neutral");
             display->SetFace("neutral");
 #if CONFIG_USE_AUDIO_PROCESSOR
@@ -774,13 +774,13 @@ void Application::SetDeviceState(DeviceState state) {
 #endif
             break;
         case kDeviceStateConnecting:
-            display->SetStatus(Lang::Strings::CONNECTING);
+            display->ShowNotification(Lang::Strings::CONNECTING);
             display->SetEmotion("neutral");
             display->SetFace("neutral");
             display->SetChatMessage("system", "");
             break;
         case kDeviceStateListening:
-            display->SetStatus(Lang::Strings::LISTENING);
+            // display->ShowNotification(Lang::Strings::LISTENING);
             display->SetEmotion("neutral");
             display->SetFace("neutral");
             ResetDecoder();
@@ -795,7 +795,7 @@ void Application::SetDeviceState(DeviceState state) {
             }
             break;
         case kDeviceStateSpeaking:
-            display->SetStatus(Lang::Strings::SPEAKING);
+            // display->ShowNotification(Lang::Strings::SPEAKING);
             ResetDecoder();
             codec->EnableOutput(true);
 #if CONFIG_USE_AUDIO_PROCESSOR

@@ -21,8 +21,8 @@ Display::Display() {
             Display *display = static_cast<Display*>(arg);
             DisplayLockGuard lock(display);
             lv_obj_add_flag(display->notification_label_, LV_OBJ_FLAG_HIDDEN);
-            if (display->status_label_ != nullptr)
-                lv_obj_clear_flag(display->status_label_, LV_OBJ_FLAG_HIDDEN);
+            // if (display->status_label_ != nullptr)
+            //     lv_obj_clear_flag(display->status_label_, LV_OBJ_FLAG_HIDDEN);
         }, 
         .arg = this,
         .dispatch_method = ESP_TIMER_TASK,
@@ -113,8 +113,8 @@ void Display::ShowNotification(const char* notification, int duration_ms) {
     }
     lv_label_set_text(notification_label_, notification);
     lv_obj_clear_flag(notification_label_, LV_OBJ_FLAG_HIDDEN);
-    if (status_label_ != nullptr)
-        lv_obj_add_flag(status_label_, LV_OBJ_FLAG_HIDDEN);
+    // if (status_label_ != nullptr)
+    //     lv_obj_add_flag(status_label_, LV_OBJ_FLAG_HIDDEN);
 
     esp_timer_stop(notification_timer_);
     ESP_ERROR_CHECK(esp_timer_start_once(notification_timer_, duration_ms * 1000));
