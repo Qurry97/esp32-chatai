@@ -20,8 +20,9 @@ public:
     virtual ~Display();
 
     virtual void SetStatus(const char* status);
-    virtual void ShowNotification(const char* notification, int duration_ms = 3000);
-    virtual void ShowNotification(const std::string &notification, int duration_ms = 3000);
+    virtual void SetStatusHide(bool value);
+    virtual void ShowNotification(const char* notification, int duration_ms = 6000);
+    virtual void ShowNotification(const std::string &notification, int duration_ms = 6000);
     virtual void SetEmotion(const char* emotion);
     virtual void SetFace(const char* emoji);
     virtual void SetFaceHide(bool value);

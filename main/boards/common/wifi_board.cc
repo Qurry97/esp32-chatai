@@ -38,8 +38,12 @@ std::string WifiBoard::GetBoardType() {
 
 void WifiBoard::EnterWifiConfigMode() {
     auto& application = Application::GetInstance();
+    auto& board = Board::GetInstance();
+    auto display = board.GetDisplay();
+    display->SetFaceHide(true);
+    display->SetStatusHide(false);
     application.SetDeviceState(kDeviceStateWifiConfiguring);
-
+    
     auto& wifi_ap = WifiConfigurationAp::GetInstance();
     wifi_ap.SetLanguage(Lang::CODE);
     wifi_ap.SetSsidPrefix("ChatAi");
@@ -90,13 +94,15 @@ void WifiBoard::StartNetwork() {
         std::string notification = Lang::Strings::CONNECT_TO;
         notification += ssid;
         notification += "...";
-        display->ShowNotification(notification.c_str(), 30000);
+        display->ShowNotification(notification.c_str(), 10000);
     });
     wifi_station.OnConnected([this](const std::string& ssid) {
         auto display = Board::GetInstance().GetDisplay();
         std::string notification = Lang::Strings::CONNECTED_TO;
         notification += ssid;
-        display->ShowNotification(notification.c_str(), 30000);
+        display->ShowNotification(notification.c_str(), 6000);
+        display->SetFaceHide(false);
+        display->SetStatusHide(true);
     });
     wifi_station.Start();
 
@@ -135,7 +141,7 @@ Udp* WifiBoard::CreateUdp() {
 
 const char* WifiBoard::GetNetworkStateIcon() {
     if (wifi_config_mode_) {
-        return FONT_AWESOME_WIFI;
+        return FONT_AWESOME_WIFI_OFF;
     }
     auto& wifi_station = WifiStation::GetInstance();
     if (!wifi_station.IsConnected()) {

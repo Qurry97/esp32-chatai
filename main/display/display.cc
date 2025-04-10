@@ -99,7 +99,19 @@ void Display::SetStatus(const char* status) {
     }
     lv_label_set_text(status_label_, status);
     lv_obj_clear_flag(status_label_, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_add_flag(notification_label_, LV_OBJ_FLAG_HIDDEN);
+}
+
+void Display::SetStatusHide(bool value) {
+    DisplayLockGuard lock(this);
+    if (status_label_ == nullptr) {
+        return;
+    }
+    if(value){
+        lv_obj_add_flag(status_label_, LV_OBJ_FLAG_HIDDEN);
+    }
+    else{
+        lv_obj_clear_flag(status_label_, LV_OBJ_FLAG_HIDDEN);
+    }
 }
 
 void Display::ShowNotification(const std::string &notification, int duration_ms) {

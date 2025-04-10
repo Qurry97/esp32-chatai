@@ -6,6 +6,9 @@
 #include <arpa/inet.h>
 #include <sstream>
 
+#include "wifi_board.h"
+#include "display.h"
+
 #define DETECTION_RUNNING_EVENT 1
 
 static const char* TAG = "WakeWordDetect";
@@ -151,6 +154,9 @@ void WakeWordDetect::AudioDetectionTask() {
 
         if (res->wakeup_state == WAKENET_DETECTED) {
             StopDetection();
+            auto display = Board::GetInstance().GetDisplay();
+            display->SetFaceHide(false);
+            display->SetStatusHide(true);
             last_detected_wake_word_ = wake_words_[res->wake_word_index - 1];
 
             if (wake_word_detected_callback_) {

@@ -120,7 +120,8 @@ void Application::CheckNewVersion() {
                 ota_.StartUpgrade([display](int progress, size_t speed) {
                     char buffer[64];
                     snprintf(buffer, sizeof(buffer), "%d%% %zuKB/s", progress, speed / 1024);
-                    display->SetChatMessage("system", buffer);
+                    // display->SetChatMessage("system", buffer);
+                    display->ShowNotification(buffer);
                 });
 
                 // If upgrade success, the device will reboot and never reach here
@@ -143,8 +144,8 @@ void Application::CheckNewVersion() {
             SetDeviceState(kDeviceStateActivating);
             ShowActivationCode();
 
-            // Check again in 60 seconds or until the device is idle
-            for (int i = 0; i < 60; ++i) {
+            // Check again in 30 seconds or until the device is idle
+            for (int i = 0; i < 30; ++i) {
                 if (device_state_ == kDeviceStateIdle) {
                     break;
                 }
@@ -155,7 +156,6 @@ void Application::CheckNewVersion() {
 
         SetDeviceState(kDeviceStateIdle);
         display->SetChatMessage("system", "");
-        display->SetFaceHide(false);
         PlaySound(Lang::Sounds::P3_SUCCESS);
         // Exit the loop if upgrade or idle
         break;
@@ -589,8 +589,8 @@ void Application::OnClockTimer() {
                     // Set status to clock "HH:MM"
                     time_t now = time(NULL);
                     char time_str[64];
-                    strftime(time_str, sizeof(time_str), "%H:%M  ", localtime(&now));
-                    // Board::GetInstance().GetDisplay()->ShowNotification(time_str);
+                    strftime(time_str, sizeof(time_str), "%H:%M", localtime(&now));
+                    Board::GetInstance().GetDisplay()->SetStatus(time_str);
                 });
             }
         }
@@ -769,9 +769,10 @@ void Application::SetDeviceState(DeviceState state) {
             display->ShowNotification(Lang::Strings::STANDBY);
             display->SetEmotion("neutral");
             display->SetFace("neutral");
+            display->SetStatusHide(false);
 #if CONFIG_USE_AUDIO_PROCESSOR
             audio_processor_.Stop();
-#endif
+#endif      
             break;
         case kDeviceStateConnecting:
             display->ShowNotification(Lang::Strings::CONNECTING);
