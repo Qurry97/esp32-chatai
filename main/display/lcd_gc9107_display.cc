@@ -14,7 +14,7 @@
 #define TAG "LcdGc9107Display"
 
 LV_FONT_DECLARE(font_awesome_30_4);
-
+#define LOGO_OVER 0x01
 
 SpiLcdGc9107Display::SpiLcdGc9107Display(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_handle_t panel,
                            int width, int height, int offset_x, int offset_y, bool mirror_x, bool mirror_y, bool swap_xy,
@@ -90,6 +90,7 @@ SpiLcdGc9107Display::SpiLcdGc9107Display(esp_lcd_panel_io_handle_t panel_io, esp
                     lv_obj_del(display->logo_img_);
                     display->logo_img_ = nullptr;
                 }
+                xEventGroupSetBits(display->event_group_, LOGO_OVER);
                 esp_timer_stop(display->logo_timer_);
                 esp_timer_delete(display->logo_timer_);
                 display->logo_show_status = true;
@@ -160,9 +161,18 @@ void LcdGc9107Display::SetLogoImg(int index)
     lv_img_set_src(logo_img_, images[index]);
 }
 
+void LcdGc9107Display::LcdGc9107DisplayTask() {
+    while (true) {
+        xEventGroupWaitBits(event_group_, LOGO_OVER, pdFALSE, pdTRUE, portMAX_DELAY);
+        vEventGroupDelete(event_group_);
+        ESP_LOGI(TAG, "LOGO SHOW OVER.");
+        break;
+    }
+}
+
 void LcdGc9107Display::ShowLogo() 
 {
-    DisplayLockGuard lock(this);
+    DisplayLockGuard lock(this); 
 
     auto screen = lv_screen_active();
     lv_obj_set_scrollbar_mode(screen, LV_SCROLLBAR_MODE_OFF);
@@ -173,6 +183,12 @@ void LcdGc9107Display::ShowLogo()
     lv_img_set_src(logo_img_, &bootlogo1);
     lv_obj_align(logo_img_, LV_ALIGN_CENTER, 0, 0);
 
+    event_group_ = xEventGroupCreate();
+    xTaskCreate([](void* arg) {
+        auto this_ = (LcdGc9107Display*)arg;
+        this_->LcdGc9107DisplayTask();
+        vTaskDelete(NULL);
+    }, "logo_show", 4096 * 2, this, 2, NULL);
 }
 
 void LcdGc9107Display::SetupUI() {
@@ -203,9 +219,9 @@ void LcdGc9107Display::SetupUI() {
     lv_obj_set_flex_align(status_bar_, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
     lv_obj_clear_flag(status_bar_, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
     lv_obj_set_style_radius(status_bar_, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(status_bar_,lv_color_black() ,0);
+    lv_obj_set_style_bg_color(status_bar_,lv_color_white() ,0);
     lv_obj_set_style_bg_opa(status_bar_, 80, 0);
-    lv_obj_set_size(status_bar_,  LV_HOR_RES,fonts_.text_font->line_height);
+    lv_obj_set_size(status_bar_,  LV_HOR_RES*0.2,LV_VER_RES);
 
     network_label_ = lv_label_create(status_bar_);
     lv_label_set_text(network_label_, "");
@@ -228,6 +244,20 @@ void LcdGc9107Display::SetupUI() {
     lv_obj_set_align(face_img_, LV_ALIGN_CENTER);
     lv_obj_add_flag(face_img_, LV_OBJ_FLAG_ADV_HITTEST);     /// Flags
     lv_obj_add_flag(face_img_, LV_OBJ_FLAG_HIDDEN);
+
+    pormpt_label_ = lv_label_create(container_);
+    lv_obj_set_style_bg_color(pormpt_label_,lv_color_white() ,0);
+    lv_obj_set_style_bg_opa(pormpt_label_, 80, 0);
+    lv_obj_set_style_border_color(pormpt_label_,lv_color_white() ,0);
+    lv_obj_set_style_border_width(pormpt_label_, 1, 0);
+    lv_obj_set_scrollbar_mode(pormpt_label_, LV_SCROLLBAR_MODE_OFF);
+    lv_label_set_long_mode(pormpt_label_, LV_LABEL_LONG_SCROLL_CIRCULAR);
+    lv_obj_set_size(pormpt_label_, LV_HOR_RES * 0.8, fonts_.text_font->line_height);
+    lv_obj_align(pormpt_label_, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_style_text_align(pormpt_label_, LV_TEXT_ALIGN_CENTER, 0);
+    lv_label_set_text(pormpt_label_, "");
+    lv_obj_add_flag(pormpt_label_, LV_OBJ_FLAG_HIDDEN);
+
 
 
     notification_label_ = lv_label_create(lv_layer_top());

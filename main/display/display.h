@@ -23,6 +23,7 @@ public:
     virtual void SetStatusHide(bool value);
     virtual void ShowNotification(const char* notification, int duration_ms = 6000);
     virtual void ShowNotification(const std::string &notification, int duration_ms = 6000);
+    virtual void ShowPormpt(const char* label,int value);
     virtual void SetEmotion(const char* emotion);
     virtual void SetFace(const char* emoji);
     virtual void SetFaceHide(bool value);
@@ -46,6 +47,7 @@ protected:
     lv_obj_t *network_label_ = nullptr;
     lv_obj_t *status_label_ = nullptr;
     lv_obj_t *notification_label_ = nullptr;
+    lv_obj_t *pormpt_label_ = nullptr;
     lv_obj_t *mute_label_ = nullptr;
     lv_obj_t *battery_label_ = nullptr;
     lv_obj_t* chat_message_label_ = nullptr;
@@ -54,6 +56,7 @@ protected:
     lv_obj_t* vol_label_ = nullptr;
     lv_obj_t* face_img_ = nullptr;
     int vol_show_timer = 0;
+    int pormpt_show_timer = 0;
 
     const char* battery_icon_ = nullptr;
     const char* network_icon_ = nullptr;

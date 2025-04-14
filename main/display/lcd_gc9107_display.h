@@ -47,7 +47,7 @@ protected:
     lv_obj_t* side_bar_ = nullptr;
     
     DisplayFonts fonts_;
-
+    void LcdGc9107DisplayTask();
     
     virtual void ShowLogo();
     virtual void ShowFace(int index);
@@ -79,6 +79,8 @@ public:
 
     esp_timer_handle_t logo_timer_ = nullptr;
     esp_timer_handle_t face_timer_ = nullptr;
+
+    EventGroupHandle_t event_group_;
 
     virtual void SetupUI();
     virtual void SetLogoImg(int index);

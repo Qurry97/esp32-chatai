@@ -132,6 +132,16 @@ void Display::ShowNotification(const char* notification, int duration_ms) {
     ESP_ERROR_CHECK(esp_timer_start_once(notification_timer_, duration_ms * 1000));
 }
 
+void Display::ShowPormpt(const char* label,int value) {
+    DisplayLockGuard lock(this);
+    if (pormpt_label_ == nullptr) {
+        return;
+    }
+    lv_label_set_text(pormpt_label_, label);
+    pormpt_show_timer = value;
+    lv_obj_clear_flag(pormpt_label_, LV_OBJ_FLAG_HIDDEN);
+}
+
 void Display::Update() {
     auto& board = Board::GetInstance();
     auto codec = board.GetAudioCodec();
@@ -159,6 +169,16 @@ void Display::Update() {
             }else{
                 if (!lv_obj_has_flag(vol_arc_, LV_OBJ_FLAG_HIDDEN)) {
                     lv_obj_add_flag(vol_arc_, LV_OBJ_FLAG_HIDDEN);
+                }
+            }
+    }
+
+    if(pormpt_label_ !=nullptr){     //提示
+            if(pormpt_show_timer>0){
+                pormpt_show_timer--;
+            }else{
+                if (!lv_obj_has_flag(pormpt_label_, LV_OBJ_FLAG_HIDDEN)) {
+                    lv_obj_add_flag(pormpt_label_, LV_OBJ_FLAG_HIDDEN);
                 }
             }
     }
@@ -239,6 +259,7 @@ void Display::SetFaceHide(bool value) {
     }
     else{
         lv_obj_clear_flag(face_img_, LV_OBJ_FLAG_HIDDEN);
+        pormpt_show_timer =0;
     }
 }
 
