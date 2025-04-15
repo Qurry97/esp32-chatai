@@ -14,7 +14,6 @@
 #define TAG "LcdGc9107Display"
 
 LV_FONT_DECLARE(font_awesome_30_4);
-#define LOGO_OVER 0x01
 
 SpiLcdGc9107Display::SpiLcdGc9107Display(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_handle_t panel,
                            int width, int height, int offset_x, int offset_y, bool mirror_x, bool mirror_y, bool swap_xy,
@@ -90,7 +89,6 @@ SpiLcdGc9107Display::SpiLcdGc9107Display(esp_lcd_panel_io_handle_t panel_io, esp
                     lv_obj_del(display->logo_img_);
                     display->logo_img_ = nullptr;
                 }
-                xEventGroupSetBits(display->event_group_, LOGO_OVER);
                 esp_timer_stop(display->logo_timer_);
                 esp_timer_delete(display->logo_timer_);
                 display->logo_show_status = true;
@@ -161,15 +159,6 @@ void LcdGc9107Display::SetLogoImg(int index)
     lv_img_set_src(logo_img_, images[index]);
 }
 
-void LcdGc9107Display::LcdGc9107DisplayTask() {
-    while (true) {
-        xEventGroupWaitBits(event_group_, LOGO_OVER, pdFALSE, pdTRUE, portMAX_DELAY);
-        vEventGroupDelete(event_group_);
-        ESP_LOGI(TAG, "LOGO SHOW OVER.");
-        break;
-    }
-}
-
 void LcdGc9107Display::ShowLogo() 
 {
     DisplayLockGuard lock(this); 
@@ -183,18 +172,16 @@ void LcdGc9107Display::ShowLogo()
     lv_img_set_src(logo_img_, &bootlogo1);
     lv_obj_align(logo_img_, LV_ALIGN_CENTER, 0, 0);
 
-    event_group_ = xEventGroupCreate();
-    xTaskCreate([](void* arg) {
-        auto this_ = (LcdGc9107Display*)arg;
-        this_->LcdGc9107DisplayTask();
-        vTaskDelete(NULL);
-    }, "logo_show", 4096 * 2, this, 2, NULL);
 }
 
 void LcdGc9107Display::SetupUI() {
     DisplayLockGuard lock(this);
 
     auto screen = lv_screen_active();
+    lv_obj_set_scrollbar_mode(screen, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_style_pad_all(screen, 0, 0);
+    lv_obj_set_style_border_width(screen, 0, 0);
+    lv_obj_set_style_radius(screen, 0, 0);
     lv_obj_set_style_bg_color(screen,lv_color_black() ,0);
     lv_obj_set_style_bg_opa(screen, 255, 0);
     lv_obj_set_style_text_font(screen, fonts_.text_font, 0);
@@ -205,7 +192,7 @@ void LcdGc9107Display::SetupUI() {
     container_ = lv_obj_create(screen);
     lv_obj_set_size(container_, LV_HOR_RES, LV_VER_RES);
     lv_obj_set_scrollbar_mode(container_, LV_SCROLLBAR_MODE_OFF);
-    lv_obj_set_style_pad_gap(container_, 0, 0);
+    lv_obj_set_style_pad_all(container_, 0, 0);
     lv_obj_set_style_border_width(container_, 0, 0);
     lv_obj_set_style_radius(container_, 0, 0);
     lv_obj_set_style_bg_color(container_,lv_color_black() ,0);
@@ -215,7 +202,7 @@ void LcdGc9107Display::SetupUI() {
     status_bar_ = lv_obj_create(container_);
     lv_obj_set_style_border_width(status_bar_, 0, 0);
     lv_obj_set_align(status_bar_, LV_ALIGN_LEFT_MID);
-    lv_obj_set_flex_flow(status_bar_, LV_FLEX_FLOW_ROW);
+    lv_obj_set_flex_flow(status_bar_, LV_FLEX_FLOW_COLUMN);
     lv_obj_set_flex_align(status_bar_, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
     lv_obj_clear_flag(status_bar_, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
     lv_obj_set_style_radius(status_bar_, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -252,7 +239,7 @@ void LcdGc9107Display::SetupUI() {
     lv_obj_set_style_border_width(pormpt_label_, 1, 0);
     lv_obj_set_scrollbar_mode(pormpt_label_, LV_SCROLLBAR_MODE_OFF);
     lv_label_set_long_mode(pormpt_label_, LV_LABEL_LONG_SCROLL_CIRCULAR);
-    lv_obj_set_size(pormpt_label_, LV_HOR_RES * 0.8, fonts_.text_font->line_height);
+    lv_obj_set_size(pormpt_label_, LV_HOR_RES * 0.8, 2*fonts_.text_font->line_height);
     lv_obj_align(pormpt_label_, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_style_text_align(pormpt_label_, LV_TEXT_ALIGN_CENTER, 0);
     lv_label_set_text(pormpt_label_, "");
@@ -269,7 +256,7 @@ void LcdGc9107Display::SetupUI() {
     lv_obj_set_style_border_width(notification_label_, 1, 0);
     lv_obj_set_scrollbar_mode(notification_label_, LV_SCROLLBAR_MODE_OFF);
     lv_label_set_long_mode(notification_label_, LV_LABEL_LONG_SCROLL_CIRCULAR);
-    lv_obj_set_size(notification_label_, LV_HOR_RES * 0.8, fonts_.text_font->line_height);
+    lv_obj_set_size(notification_label_, LV_HOR_RES * 0.8, 2*fonts_.text_font->line_height);
     lv_obj_align(notification_label_, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_style_text_align(notification_label_, LV_TEXT_ALIGN_CENTER, 0);
     lv_label_set_text(notification_label_, "");
@@ -315,7 +302,7 @@ void LcdGc9107Display::SetupUI() {
                 display->ShowFace(display->current_face_state_);
             }else{
                 display->current_face_index_ = 0;
-                display->current_face_state_ = NEUTRAL;
+                // display->current_face_state_ = NEUTRAL;
                 display->ShowFace(display->current_face_state_);
             }
         },
@@ -336,9 +323,8 @@ void LcdGc9107Display::SetNeutral(int index)
         return;
     } 
     static const lv_img_dsc_t *images[] = {
-        &neutral1, &neutral2, &neutral3, &neutral4, &neutral5,
-        &neutral6, &neutral7, &neutral8, &neutral9, &neutral10,
-        &neutral11, &neutral12, &neutral13, &neutral14
+        &neutral1, &neutral2, &neutral3, &neutral4, 
+        &neutral5, &neutral6, &neutral7, &neutral8
     };
     if(current_face_count_ != sizeof(images) / sizeof(images[0]))
         current_face_count_ = sizeof(images) / sizeof(images[0]);
@@ -353,10 +339,8 @@ void LcdGc9107Display::SetHappy(int index)
         return;
     } 
     static const lv_img_dsc_t *images[] = {
-        &happy1, &happy2, &happy3, &happy4, &happy5,
-        &happy6, &happy7, &happy8, &happy9, &happy10,
-        &happy11, &happy12, &happy13, &happy14, &happy15,
-        &happy16
+        &happy1, &happy2, &happy3, &happy4, 
+        &happy5, &happy6, &happy7, &happy8,
     };
     if(current_face_count_ != sizeof(images) / sizeof(images[0]))
         current_face_count_ = sizeof(images) / sizeof(images[0]);
@@ -371,10 +355,8 @@ void LcdGc9107Display::SetSad(int index)
         return;
     } 
     static const lv_img_dsc_t *images[] = {
-        &sad1, &sad2, &sad3, &sad4, &sad5,
-        &sad6, &sad7, &sad8, &sad9, &sad10,
-        &sad11, &sad12, &sad13, &sad14, &sad15,
-        &sad16
+        &sad1, &sad2, &sad3, &sad4, 
+        &sad5, &sad6, &sad7, &sad8,
     };
     if(current_face_count_ != sizeof(images) / sizeof(images[0]))
         current_face_count_ = sizeof(images) / sizeof(images[0]);
@@ -389,9 +371,8 @@ void LcdGc9107Display::SetAngry(int index)
         return;
     } 
     static const lv_img_dsc_t *images[] = {
-        &angry1, &angry2, &angry3, &angry4, &angry5,
-        &angry6, &angry7, &angry8, &angry7, &angry6,
-        &angry5, &angry4, &angry3, &angry2, &angry1,
+        &angry1, &angry2, &angry3, &angry4, 
+        &angry5, &angry6, &angry7, &angry8
     };
     if(current_face_count_ != sizeof(images) / sizeof(images[0]))
         current_face_count_ = sizeof(images) / sizeof(images[0]);
@@ -406,10 +387,8 @@ void LcdGc9107Display::SetLoving(int index)
         return;
     } 
     static const lv_img_dsc_t *images[] = {
-        &loving1, &loving2, &loving3, &loving4, &loving5,
-        &loving6, &loving7, &loving8, &loving9, &loving7, 
-        &loving6,&loving5, &loving4, &loving3, &loving2, 
-        &loving1,
+        &loving1, &loving2, &loving3, &loving4,
+        &loving5, &loving6, &loving7, &loving8
     };
     if(current_face_count_ != sizeof(images) / sizeof(images[0]))
         current_face_count_ = sizeof(images) / sizeof(images[0]);
@@ -424,9 +403,8 @@ void LcdGc9107Display::SetEmbarrass(int index)
         return;
     } 
     static const lv_img_dsc_t *images[] = {
-        &embarrassed1, &embarrassed2, &embarrassed3, &embarrassed4, &embarrassed5,
-        &embarrassed6, &embarrassed5, &embarrassed4, &embarrassed4, &embarrassed5, 
-        &embarrassed4, &embarrassed3, &embarrassed2, &embarrassed1,
+        &embarrassed1, &embarrassed2, &embarrassed3,
+        &embarrassed4, &embarrassed5, &embarrassed6, 
     };
     if(current_face_count_ != sizeof(images) / sizeof(images[0]))
         current_face_count_ = sizeof(images) / sizeof(images[0]);
@@ -441,9 +419,8 @@ void LcdGc9107Display::SetDefault(int index)
         return;
     } 
     static const lv_img_dsc_t *images[] = {
-        &default_face1, &default_face2, &default_face3, &default_face4, &default_face5,
-        &default_face6, &default_face7, &default_face8, &default_face7, &default_face5, 
-        &default_face4, &default_face3, &default_face2, &default_face1,
+        &default_face1, &default_face2, &default_face3, &default_face4, 
+        &default_face5, &default_face6, &default_face7, &default_face8, 
     };
     if(current_face_count_ != sizeof(images) / sizeof(images[0]))
         current_face_count_ = sizeof(images) / sizeof(images[0]);
@@ -465,6 +442,7 @@ void LcdGc9107Display::ShowFace(int index)
         case HAPPY:
         case LAUGHING:
         case FUNNY:
+        case KISSY:
             SetHappy(current_face_index_);
             break;
         case SAD:
@@ -473,9 +451,7 @@ void LcdGc9107Display::ShowFace(int index)
         case ANGRY:
             SetAngry(current_face_index_);
             break;
-        case CRYING:
-            
-            break;
+        case SLEEPY:
         case EMBARRAS:
             SetEmbarrass(current_face_index_);
             break;

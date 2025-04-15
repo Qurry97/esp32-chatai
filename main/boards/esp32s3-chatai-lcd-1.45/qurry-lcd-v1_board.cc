@@ -31,7 +31,7 @@
 
 LV_FONT_DECLARE(font_puhui_20_4);
 LV_FONT_DECLARE(font_awesome_20_4);
-LV_FONT_DECLARE(font_puhui_14_1);
+LV_FONT_DECLARE(font_Bouti_14_1);
 LV_FONT_DECLARE(font_awesome_14_1);
 
 // class KEVIN_SP_V3Board : public Ml307Board {
@@ -92,7 +92,7 @@ private:
         power_save_timer_->OnShutdownRequest([this]() {
             ESP_LOGI(TAG, "Shutting down");
             esp_lcd_panel_disp_on_off(panel, false); //关闭显示
-            esp_deep_sleep_start();
+            // esp_deep_sleep_start();
         });
         power_save_timer_->SetEnabled(true);
     }
@@ -172,7 +172,7 @@ private:
         display_ = new SpiLcdGc9107Display(panel_io, panel,
                             DISPLAY_WIDTH, DISPLAY_HEIGHT, DISPLAY_OFFSET_X, DISPLAY_OFFSET_Y, DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y, DISPLAY_SWAP_XY,
                             {
-                                .text_font = &font_puhui_14_1,
+                                .text_font = &font_Bouti_14_1,
                                 .icon_font = &font_awesome_14_1,
                                 .emoji_font = font_emoji_32_init(),
                             });

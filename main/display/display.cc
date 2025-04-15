@@ -137,6 +137,7 @@ void Display::ShowPormpt(const char* label,int value) {
     if (pormpt_label_ == nullptr) {
         return;
     }
+    ESP_LOGI(TAG, "-----------ShowPormpt:%d", value);
     lv_label_set_text(pormpt_label_, label);
     pormpt_show_timer = value;
     lv_obj_clear_flag(pormpt_label_, LV_OBJ_FLAG_HIDDEN);

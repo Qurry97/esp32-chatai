@@ -348,7 +348,7 @@ void Application::Start() {
 
     /* Setup the display */
     auto display = board.GetDisplay();
-
+    while(!display->GetLogoStatus());
     /* Setup the audio codec */
     auto codec = board.GetAudioCodec();
     opus_decode_sample_rate_ = codec->output_sample_rate();

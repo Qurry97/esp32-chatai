@@ -445,9 +445,8 @@ void LcdDisplay::SetNeutral(int index)
         return;
     } 
     static const lv_img_dsc_t *images[] = {
-        &neutral1, &neutral2, &neutral3, &neutral4, &neutral5,
-        &neutral6, &neutral7, &neutral8, &neutral9, &neutral10,
-        &neutral11, &neutral12, &neutral13, &neutral14
+        &neutral1, &neutral2, &neutral3, &neutral4, 
+        &neutral5, &neutral6, &neutral7, &neutral8
     };
     if(current_face_count_ != sizeof(images) / sizeof(images[0]))
         current_face_count_ = sizeof(images) / sizeof(images[0]);
@@ -462,10 +461,8 @@ void LcdDisplay::SetHappy(int index)
         return;
     } 
     static const lv_img_dsc_t *images[] = {
-        &happy1, &happy2, &happy3, &happy4, &happy5,
-        &happy6, &happy7, &happy8, &happy9, &happy10,
-        &happy11, &happy12, &happy13, &happy14, &happy15,
-        &happy16
+        &happy1, &happy2, &happy3, &happy4, 
+        &happy5, &happy6, &happy7, &happy8,
     };
     if(current_face_count_ != sizeof(images) / sizeof(images[0]))
         current_face_count_ = sizeof(images) / sizeof(images[0]);
@@ -480,10 +477,8 @@ void LcdDisplay::SetSad(int index)
         return;
     } 
     static const lv_img_dsc_t *images[] = {
-        &sad1, &sad2, &sad3, &sad4, &sad5,
-        &sad6, &sad7, &sad8, &sad9, &sad10,
-        &sad11, &sad12, &sad13, &sad14, &sad15,
-        &sad16
+        &sad1, &sad2, &sad3, &sad4, 
+        &sad5, &sad6, &sad7, &sad8,
     };
     if(current_face_count_ != sizeof(images) / sizeof(images[0]))
         current_face_count_ = sizeof(images) / sizeof(images[0]);
@@ -498,9 +493,8 @@ void LcdDisplay::SetAngry(int index)
         return;
     } 
     static const lv_img_dsc_t *images[] = {
-        &angry1, &angry2, &angry3, &angry4, &angry5,
-        &angry6, &angry7, &angry8, &angry7, &angry6,
-        &angry5, &angry4, &angry3, &angry2, &angry1,
+        &angry1, &angry2, &angry3, &angry4, 
+        &angry5, &angry6, &angry7, &angry8
     };
     if(current_face_count_ != sizeof(images) / sizeof(images[0]))
         current_face_count_ = sizeof(images) / sizeof(images[0]);
@@ -515,10 +509,8 @@ void LcdDisplay::SetLoving(int index)
         return;
     } 
     static const lv_img_dsc_t *images[] = {
-        &loving1, &loving2, &loving3, &loving4, &loving5,
-        &loving6, &loving7, &loving8, &loving9, &loving7, 
-        &loving6,&loving5, &loving4, &loving3, &loving2, 
-        &loving1,
+        &loving1, &loving2, &loving3, &loving4,
+        &loving5, &loving6, &loving7, &loving8
     };
     if(current_face_count_ != sizeof(images) / sizeof(images[0]))
         current_face_count_ = sizeof(images) / sizeof(images[0]);
@@ -533,9 +525,8 @@ void LcdDisplay::SetEmbarrass(int index)
         return;
     } 
     static const lv_img_dsc_t *images[] = {
-        &embarrassed1, &embarrassed2, &embarrassed3, &embarrassed4, &embarrassed5,
-        &embarrassed6, &embarrassed5, &embarrassed4, &embarrassed4, &embarrassed5, 
-        &embarrassed4, &embarrassed3, &embarrassed2, &embarrassed1,
+        &embarrassed1, &embarrassed2, &embarrassed3,
+        &embarrassed4, &embarrassed5, &embarrassed6, 
     };
     if(current_face_count_ != sizeof(images) / sizeof(images[0]))
         current_face_count_ = sizeof(images) / sizeof(images[0]);
@@ -550,9 +541,8 @@ void LcdDisplay::SetDefault(int index)
         return;
     } 
     static const lv_img_dsc_t *images[] = {
-        &default_face1, &default_face2, &default_face3, &default_face4, &default_face5,
-        &default_face6, &default_face7, &default_face8, &default_face7, &default_face5, 
-        &default_face4, &default_face3, &default_face2, &default_face1,
+        &default_face1, &default_face2, &default_face3, &default_face4, 
+        &default_face5, &default_face6, &default_face7, &default_face8, 
     };
     if(current_face_count_ != sizeof(images) / sizeof(images[0]))
         current_face_count_ = sizeof(images) / sizeof(images[0]);
@@ -574,6 +564,7 @@ void LcdDisplay::ShowFace(int index)
         case HAPPY:
         case LAUGHING:
         case FUNNY:
+        case KISSY:
             SetHappy(current_face_index_);
             break;
         case SAD:
@@ -582,9 +573,7 @@ void LcdDisplay::ShowFace(int index)
         case ANGRY:
             SetAngry(current_face_index_);
             break;
-        case CRYING:
-            
-            break;
+        case SLEEPY:
         case EMBARRAS:
             SetEmbarrass(current_face_index_);
             break;
