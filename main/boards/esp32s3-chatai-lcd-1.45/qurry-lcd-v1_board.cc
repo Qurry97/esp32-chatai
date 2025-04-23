@@ -87,6 +87,7 @@ private:
             display_->SetChatMessage("system", "");
             display_->SetEmotion("neutral");
             display_->SetFace("neutral");
+            esp_lcd_panel_disp_on_off(panel, true);
             GetBacklight()->RestoreBrightness();
         });
         power_save_timer_->OnShutdownRequest([this]() {

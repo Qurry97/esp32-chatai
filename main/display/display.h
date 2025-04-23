@@ -21,8 +21,8 @@ public:
 
     virtual void SetStatus(const char* status);
     virtual void SetStatusHide(bool value);
-    virtual void ShowNotification(const char* notification, int duration_ms = 6000);
-    virtual void ShowNotification(const std::string &notification, int duration_ms = 6000);
+    virtual void ShowNotification(const char* notification, int duration_ms = 3000);
+    virtual void ShowNotification(const std::string &notification, int duration_ms = 3000);
     virtual void ShowPormpt(const char* label,int value);
     virtual void SetEmotion(const char* emotion);
     virtual void SetFace(const char* emoji);
@@ -31,6 +31,7 @@ public:
     virtual void SetIcon(const char* icon);
     virtual void SetVolume(int vol);
     virtual bool GetLogoStatus();
+    virtual void SetQrHide(bool value);
     
 
     inline int width() const { return width_; }
@@ -55,8 +56,10 @@ protected:
     lv_obj_t* vol_arc_ = nullptr;
     lv_obj_t* vol_label_ = nullptr;
     lv_obj_t* face_img_ = nullptr;
+    lv_obj_t* wifi_qr = nullptr;
     int vol_show_timer = 0;
     int pormpt_show_timer = 0;
+    lv_obj_t* status_bar_ = nullptr;
 
     const char* battery_icon_ = nullptr;
     const char* network_icon_ = nullptr;

@@ -103,14 +103,17 @@ void Display::SetStatus(const char* status) {
 
 void Display::SetStatusHide(bool value) {
     DisplayLockGuard lock(this);
-    if (status_label_ == nullptr) {
+    if (status_bar_ == nullptr) {
         return;
     }
+    ESP_LOGI(TAG, "hide:%d", value);
     if(value){
-        lv_obj_add_flag(status_label_, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(status_bar_, LV_OBJ_FLAG_HIDDEN);
+        if (status_label_ != nullptr)
+            lv_obj_add_flag(status_label_, LV_OBJ_FLAG_HIDDEN);
     }
     else{
-        lv_obj_clear_flag(status_label_, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(status_bar_, LV_OBJ_FLAG_HIDDEN);
     }
 }
 
@@ -261,6 +264,19 @@ void Display::SetFaceHide(bool value) {
     else{
         lv_obj_clear_flag(face_img_, LV_OBJ_FLAG_HIDDEN);
         pormpt_show_timer =0;
+    }
+}
+
+void Display::SetQrHide(bool value) {
+    DisplayLockGuard lock(this);
+    if (wifi_qr == nullptr) {
+        return;
+    }
+    if(value){
+        lv_obj_add_flag(wifi_qr, LV_OBJ_FLAG_HIDDEN);
+    }
+    else{
+        lv_obj_clear_flag(wifi_qr, LV_OBJ_FLAG_HIDDEN);
     }
 }
 

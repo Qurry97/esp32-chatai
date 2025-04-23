@@ -10,7 +10,7 @@
 #include <atomic>
 
 #define LOGO_TIMEOUT 130*1000    //us
-#define FACE_TIMEOUT 150*1000    //us
+#define FACE_TIMEOUT 220*1000    //us
 enum {
     NEUTRAL =0,
     HAPPY,
@@ -41,7 +41,7 @@ protected:
     esp_lcd_panel_handle_t panel_ = nullptr;
     
     lv_draw_buf_t draw_buf_;
-    lv_obj_t* status_bar_ = nullptr;
+    // lv_obj_t* status_bar_ = nullptr;
     lv_obj_t* content_ = nullptr;
     lv_obj_t* container_ = nullptr;
     lv_obj_t* side_bar_ = nullptr;

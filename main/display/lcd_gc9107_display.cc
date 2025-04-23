@@ -6,7 +6,7 @@
 #include <esp_err.h>
 #include <esp_lvgl_port.h>
 #include "assets/lang_config.h"
-
+#include <string.h>
 #include "board.h"
 #include "resources.h"
 #include "audio_codec.h"
@@ -207,16 +207,17 @@ void LcdGc9107Display::SetupUI() {
     lv_obj_clear_flag(status_bar_, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
     lv_obj_set_style_radius(status_bar_, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(status_bar_,lv_color_white() ,0);
-    lv_obj_set_style_bg_opa(status_bar_, 80, 0);
+    lv_obj_set_style_bg_opa(status_bar_, 20, 0);
     lv_obj_set_size(status_bar_,  LV_HOR_RES*0.2,LV_VER_RES);
 
     network_label_ = lv_label_create(status_bar_);
     lv_label_set_text(network_label_, "");
     lv_obj_set_style_text_font(network_label_, fonts_.icon_font, 0);
 
-    status_label_ = lv_label_create(status_bar_);
-    lv_obj_set_flex_grow(status_label_, 1);
+    status_label_ = lv_label_create(container_);
+    lv_obj_set_size(status_label_,  LV_HOR_RES * 0.3,1.2*fonts_.text_font->line_height);
     lv_label_set_long_mode(status_label_, LV_LABEL_LONG_SCROLL_CIRCULAR);
+    lv_obj_set_align(status_label_, LV_ALIGN_TOP_MID);
     lv_obj_set_style_text_align(status_label_, LV_TEXT_ALIGN_CENTER, 0);
     lv_label_set_text(status_label_, "");
 
@@ -232,6 +233,16 @@ void LcdGc9107Display::SetupUI() {
     lv_obj_add_flag(face_img_, LV_OBJ_FLAG_ADV_HITTEST);     /// Flags
     lv_obj_add_flag(face_img_, LV_OBJ_FLAG_HIDDEN);
 
+
+    wifi_qr = lv_qrcode_create(container_);
+    lv_color_t bg_color = lv_palette_lighten(LV_PALETTE_LIGHT_BLUE, 5);
+    lv_obj_set_style_border_color(wifi_qr, bg_color, 0);
+    lv_obj_set_style_border_width(wifi_qr, 2, 0);
+    lv_obj_center(wifi_qr);
+    const char * data = "http://192.168.4.1";
+    lv_qrcode_update(wifi_qr, data, strlen(data));
+    lv_obj_add_flag(wifi_qr, LV_OBJ_FLAG_HIDDEN);
+
     pormpt_label_ = lv_label_create(container_);
     lv_obj_set_style_bg_color(pormpt_label_,lv_color_white() ,0);
     lv_obj_set_style_bg_opa(pormpt_label_, 80, 0);
@@ -239,7 +250,7 @@ void LcdGc9107Display::SetupUI() {
     lv_obj_set_style_border_width(pormpt_label_, 1, 0);
     lv_obj_set_scrollbar_mode(pormpt_label_, LV_SCROLLBAR_MODE_OFF);
     lv_label_set_long_mode(pormpt_label_, LV_LABEL_LONG_SCROLL_CIRCULAR);
-    lv_obj_set_size(pormpt_label_, LV_HOR_RES * 0.8, 2*fonts_.text_font->line_height);
+    lv_obj_set_size(pormpt_label_, LV_HOR_RES * 0.8, 1.2*fonts_.text_font->line_height);
     lv_obj_align(pormpt_label_, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_style_text_align(pormpt_label_, LV_TEXT_ALIGN_CENTER, 0);
     lv_label_set_text(pormpt_label_, "");
@@ -256,7 +267,7 @@ void LcdGc9107Display::SetupUI() {
     lv_obj_set_style_border_width(notification_label_, 1, 0);
     lv_obj_set_scrollbar_mode(notification_label_, LV_SCROLLBAR_MODE_OFF);
     lv_label_set_long_mode(notification_label_, LV_LABEL_LONG_SCROLL_CIRCULAR);
-    lv_obj_set_size(notification_label_, LV_HOR_RES * 0.8, 2*fonts_.text_font->line_height);
+    lv_obj_set_size(notification_label_, LV_HOR_RES * 0.8, 1.2*fonts_.text_font->line_height);
     lv_obj_align(notification_label_, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_style_text_align(notification_label_, LV_TEXT_ALIGN_CENTER, 0);
     lv_label_set_text(notification_label_, "");

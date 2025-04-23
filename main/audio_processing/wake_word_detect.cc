@@ -140,7 +140,6 @@ void WakeWordDetect::AudioDetectionTask() {
 
         // Store the wake word data for voice recognition, like who is speaking
         StoreWakeWordData((uint16_t*)res->data, res->data_size / sizeof(uint16_t));
-        ESP_LOGI(TAG,"====Audio Detection====");
         // VAD state change
         if (vad_state_change_callback_) {
             if (res->vad_state == AFE_VAD_SPEECH && !is_speaking_) {

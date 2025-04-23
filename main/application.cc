@@ -391,7 +391,7 @@ void Application::Start() {
     board.StartNetwork();
 
     // Initialize the protocol
-    display->ShowNotification(Lang::Strings::LOADING_PROTOCOL);
+    //display->ShowNotification(Lang::Strings::LOADING_PROTOCOL);
 #ifdef CONFIG_CONNECTION_TYPE_WEBSOCKET
     protocol_ = std::make_unique<WebsocketProtocol>();
 #else
@@ -555,6 +555,8 @@ void Application::Start() {
                 ESP_LOGI(TAG, "Wake word detected: %s", wake_word.c_str());
                 keep_listening_ = true;
                 SetDeviceState(kDeviceStateIdle);
+                auto display = Board::GetInstance().GetDisplay();
+                display->SetStatusHide(true);
             } else if (device_state_ == kDeviceStateSpeaking) {
                 AbortSpeaking(kAbortReasonWakeWordDetected);
             } else if (device_state_ == kDeviceStateActivating) {
