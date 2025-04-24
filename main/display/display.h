@@ -31,7 +31,8 @@ public:
     virtual void SetIcon(const char* icon);
     virtual void SetVolume(int vol);
     virtual bool GetLogoStatus();
-    virtual void SetQrHide(bool value);
+    virtual void SetQrHide(bool value,const char* http);
+    virtual void ShowQrLabel(const char* label);
     
 
     inline int width() const { return width_; }
@@ -57,6 +58,7 @@ protected:
     lv_obj_t* vol_label_ = nullptr;
     lv_obj_t* face_img_ = nullptr;
     lv_obj_t* wifi_qr = nullptr;
+    lv_obj_t* qr_label_ = nullptr;
     int vol_show_timer = 0;
     int pormpt_show_timer = 0;
     lv_obj_t* status_bar_ = nullptr;

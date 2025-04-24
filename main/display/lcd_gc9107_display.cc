@@ -237,11 +237,25 @@ void LcdGc9107Display::SetupUI() {
     wifi_qr = lv_qrcode_create(container_);
     lv_color_t bg_color = lv_palette_lighten(LV_PALETTE_LIGHT_BLUE, 5);
     lv_obj_set_style_border_color(wifi_qr, bg_color, 0);
-    lv_obj_set_style_border_width(wifi_qr, 2, 0);
-    lv_obj_center(wifi_qr);
+    lv_obj_set_style_border_width(wifi_qr, 1, 0);
+    lv_obj_align(wifi_qr,LV_ALIGN_TOP_MID,0,0);
+    lv_qrcode_set_size(wifi_qr, 38);
     const char * data = "http://192.168.4.1";
     lv_qrcode_update(wifi_qr, data, strlen(data));
     lv_obj_add_flag(wifi_qr, LV_OBJ_FLAG_HIDDEN);
+
+    qr_label_ = lv_label_create(container_);
+    lv_obj_set_style_bg_color(qr_label_,lv_color_white() ,0);
+    lv_obj_set_style_bg_opa(qr_label_, 80, 0);
+    lv_obj_set_style_border_color(qr_label_,lv_color_white() ,0);
+    lv_obj_set_style_border_width(qr_label_, 1, 0);
+    lv_obj_set_scrollbar_mode(qr_label_, LV_SCROLLBAR_MODE_OFF);
+    lv_label_set_long_mode(qr_label_, LV_LABEL_LONG_SCROLL_CIRCULAR);
+    lv_obj_set_size(qr_label_, LV_HOR_RES * 0.6, 1.1*fonts_.text_font->line_height);
+    lv_obj_align_to(qr_label_,wifi_qr, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    lv_obj_set_style_text_align(qr_label_, LV_TEXT_ALIGN_CENTER, 0);
+    lv_label_set_text(qr_label_, "");
+    lv_obj_add_flag(qr_label_, LV_OBJ_FLAG_HIDDEN);
 
     pormpt_label_ = lv_label_create(container_);
     lv_obj_set_style_bg_color(pormpt_label_,lv_color_white() ,0);

@@ -143,7 +143,8 @@ void Application::CheckNewVersion() {
             // Activation code is valid
             SetDeviceState(kDeviceStateActivating);
             ShowActivationCode();
-
+            display->ShowQrLabel(Lang::Strings::CONTRL_CONFIG_MODE);
+            display->SetQrHide(false,"https://xiaozhi.me/");
             // Check again in 30 seconds or until the device is idle
             for (int i = 0; i < 30; ++i) {
                 if (device_state_ == kDeviceStateIdle) {
@@ -155,6 +156,8 @@ void Application::CheckNewVersion() {
         }
 
         SetDeviceState(kDeviceStateIdle);
+        display->SetQrHide(true,nullptr);
+        display->SetFaceHide(false);
         display->SetChatMessage("system", "");
         PlaySound(Lang::Sounds::P3_SUCCESS);
         // Exit the loop if upgrade or idle

@@ -146,6 +146,14 @@ void Display::ShowPormpt(const char* label,int value) {
     lv_obj_clear_flag(pormpt_label_, LV_OBJ_FLAG_HIDDEN);
 }
 
+void Display::ShowQrLabel(const char* label) {
+    DisplayLockGuard lock(this);
+    if (qr_label_ == nullptr) {
+        return;
+    }
+    lv_label_set_text(qr_label_, label);
+}
+
 void Display::Update() {
     auto& board = Board::GetInstance();
     auto codec = board.GetAudioCodec();
@@ -267,16 +275,21 @@ void Display::SetFaceHide(bool value) {
     }
 }
 
-void Display::SetQrHide(bool value) {
+void Display::SetQrHide(bool value,const char* http) {
     DisplayLockGuard lock(this);
-    if (wifi_qr == nullptr) {
+    if (wifi_qr == nullptr && qr_label_ == nullptr) {
         return;
     }
     if(value){
         lv_obj_add_flag(wifi_qr, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(qr_label_, LV_OBJ_FLAG_HIDDEN);
     }
     else{
         lv_obj_clear_flag(wifi_qr, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(qr_label_, LV_OBJ_FLAG_HIDDEN);
+    }
+    if(http){
+        lv_qrcode_update(wifi_qr, http, strlen(http));
     }
 }
 
