@@ -23,6 +23,7 @@ namespace Lang {
         constexpr const char* CONNECTING = "连接中...";
         constexpr const char* CONNECT_TO = "连接 ";
         constexpr const char* CONNECT_TO_HOTSPOT = "手机连接热点 ";
+        constexpr const char* CONTRL_CONFIG_MODE = "打开浏览器扫描二维码进入控制台，并输入验证码添加设备";
         constexpr const char* DETECTING_MODULE = "检测模组...";
         constexpr const char* ENTERING_WIFI_CONFIG_MODE = "进入配网模式...";
         constexpr const char* ERROR = "错误";
@@ -50,7 +51,6 @@ namespace Lang {
         constexpr const char* VOLUME = "音量 ";
         constexpr const char* WARNING = "警告";
         constexpr const char* WIFI_CONFIG_MODE = "配网模式";
-        constexpr const char* CONTRL_CONFIG_MODE = "打开浏览器扫描二维码进入控制台，并输入验证码添加设备";
     }
 
     // 音效资源

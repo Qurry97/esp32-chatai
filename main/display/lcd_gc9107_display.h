@@ -53,10 +53,11 @@ protected:
     virtual void SetNeutral(int index);
     virtual void SetHappy(int index);
     virtual void SetSad(int index);
+    virtual void SetIdle(int index);
+    virtual void SetCrying(int index);
     virtual void SetAngry(int index);
     virtual void SetLoving(int index);
     virtual void SetEmbarrass(int index);
-    virtual void SetDefault(int index);
     virtual bool Lock(int timeout_ms = 0) override;
     virtual void Unlock() override;
 

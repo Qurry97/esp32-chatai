@@ -25,7 +25,6 @@ LV_IMG_DECLARE(bootlogo18);
 LV_IMG_DECLARE(bootlogo19);
 LV_IMG_DECLARE(bootlogo20);
 LV_IMG_DECLARE(bootlogo21);
-LV_IMG_DECLARE(bootlogo22);
 
 //neutral 
 LV_IMG_DECLARE(neutral1);
@@ -36,7 +35,8 @@ LV_IMG_DECLARE(neutral5);
 LV_IMG_DECLARE(neutral6);
 LV_IMG_DECLARE(neutral7);
 LV_IMG_DECLARE(neutral8);
-
+LV_IMG_DECLARE(neutral9);
+LV_IMG_DECLARE(neutral10);
 
 //happy 
 LV_IMG_DECLARE(happy1);
@@ -45,8 +45,14 @@ LV_IMG_DECLARE(happy3);
 LV_IMG_DECLARE(happy4);
 LV_IMG_DECLARE(happy5);
 LV_IMG_DECLARE(happy6);
-LV_IMG_DECLARE(happy7);
-LV_IMG_DECLARE(happy8);
+
+
+
+//crying 
+LV_IMG_DECLARE(crying1);
+LV_IMG_DECLARE(crying2);
+LV_IMG_DECLARE(crying3);
+
 
 
 //sad 
@@ -68,7 +74,8 @@ LV_IMG_DECLARE(angry4);
 LV_IMG_DECLARE(angry5);
 LV_IMG_DECLARE(angry6);
 LV_IMG_DECLARE(angry7);
-LV_IMG_DECLARE(angry8);
+
+
 
 //loving 
 LV_IMG_DECLARE(loving1);
@@ -77,8 +84,18 @@ LV_IMG_DECLARE(loving3);
 LV_IMG_DECLARE(loving4);
 LV_IMG_DECLARE(loving5);
 LV_IMG_DECLARE(loving6);
-LV_IMG_DECLARE(loving7);
-LV_IMG_DECLARE(loving8);
+
+
+
+//idle 
+LV_IMG_DECLARE(idle1);
+LV_IMG_DECLARE(idle2);
+LV_IMG_DECLARE(idle3);
+LV_IMG_DECLARE(idle4);
+LV_IMG_DECLARE(idle5);
+LV_IMG_DECLARE(idle6);
+LV_IMG_DECLARE(idle7);
+
 
 
 //embarrassed 
@@ -86,17 +103,7 @@ LV_IMG_DECLARE(embarrassed1);
 LV_IMG_DECLARE(embarrassed2);
 LV_IMG_DECLARE(embarrassed3);
 LV_IMG_DECLARE(embarrassed4);
-LV_IMG_DECLARE(embarrassed5);
-LV_IMG_DECLARE(embarrassed6);
 
-//default_face 
-LV_IMG_DECLARE(default_face1);
-LV_IMG_DECLARE(default_face2);
-LV_IMG_DECLARE(default_face3);
-LV_IMG_DECLARE(default_face4);
-LV_IMG_DECLARE(default_face5);
-LV_IMG_DECLARE(default_face6);
-LV_IMG_DECLARE(default_face7);
-LV_IMG_DECLARE(default_face8);
+
 
 #endif

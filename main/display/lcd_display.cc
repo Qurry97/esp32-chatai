@@ -82,7 +82,7 @@ SpiLcdDisplay::SpiLcdDisplay(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_h
         .callback = [](void *arg) {
             LcdDisplay *display = static_cast<LcdDisplay*>(arg);
             DisplayLockGuard lock(display);
-            if(display->current_logo_index_< 21){
+            if(display->current_logo_index_< 20){
                 display->current_logo_index_++;
                 display->SetLogoImg(display->current_logo_index_);
             }else{
@@ -217,7 +217,7 @@ void LcdDisplay::SetLogoImg(int index)
         &bootlogo6, &bootlogo7, &bootlogo8, &bootlogo9, &bootlogo10,
         &bootlogo11, &bootlogo12, &bootlogo13, &bootlogo14, &bootlogo15,
         &bootlogo16, &bootlogo17, &bootlogo18, &bootlogo19, &bootlogo20,
-        &bootlogo21, &bootlogo22
+        &bootlogo21
     };
     lv_img_set_src(logo_img_, images[index]);
     
@@ -462,7 +462,7 @@ void LcdDisplay::SetHappy(int index)
     } 
     static const lv_img_dsc_t *images[] = {
         &happy1, &happy2, &happy3, &happy4, 
-        &happy5, &happy6, &happy7, &happy8,
+        &happy5, &happy6
     };
     if(current_face_count_ != sizeof(images) / sizeof(images[0]))
         current_face_count_ = sizeof(images) / sizeof(images[0]);
@@ -494,7 +494,7 @@ void LcdDisplay::SetAngry(int index)
     } 
     static const lv_img_dsc_t *images[] = {
         &angry1, &angry2, &angry3, &angry4, 
-        &angry5, &angry6, &angry7, &angry8
+        &angry5, &angry6, &angry7
     };
     if(current_face_count_ != sizeof(images) / sizeof(images[0]))
         current_face_count_ = sizeof(images) / sizeof(images[0]);
@@ -510,7 +510,7 @@ void LcdDisplay::SetLoving(int index)
     } 
     static const lv_img_dsc_t *images[] = {
         &loving1, &loving2, &loving3, &loving4,
-        &loving5, &loving6, &loving7, &loving8
+        &loving5, &loving6
     };
     if(current_face_count_ != sizeof(images) / sizeof(images[0]))
         current_face_count_ = sizeof(images) / sizeof(images[0]);
@@ -526,7 +526,7 @@ void LcdDisplay::SetEmbarrass(int index)
     } 
     static const lv_img_dsc_t *images[] = {
         &embarrassed1, &embarrassed2, &embarrassed3,
-        &embarrassed4, &embarrassed5, &embarrassed6, 
+        &embarrassed4
     };
     if(current_face_count_ != sizeof(images) / sizeof(images[0]))
         current_face_count_ = sizeof(images) / sizeof(images[0]);
@@ -534,21 +534,6 @@ void LcdDisplay::SetEmbarrass(int index)
     lv_img_set_src(face_img_, images[index]);
 }
 
-void LcdDisplay::SetDefault(int index)
-{
-    DisplayLockGuard lock(this);
-    if(face_img_==nullptr){
-        return;
-    } 
-    static const lv_img_dsc_t *images[] = {
-        &default_face1, &default_face2, &default_face3, &default_face4, 
-        &default_face5, &default_face6, &default_face7, &default_face8, 
-    };
-    if(current_face_count_ != sizeof(images) / sizeof(images[0]))
-        current_face_count_ = sizeof(images) / sizeof(images[0]);
-
-    lv_img_set_src(face_img_, images[index]);
-}
 
 void LcdDisplay::ShowFace(int index)
 {
@@ -581,7 +566,7 @@ void LcdDisplay::ShowFace(int index)
             SetLoving(current_face_index_);
             break;
         default:
-            SetDefault(current_face_index_);
+            SetNeutral(current_face_index_);
             break;
     }
 }
