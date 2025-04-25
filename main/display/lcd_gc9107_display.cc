@@ -467,6 +467,149 @@ void LcdGc9107Display::SetCrying(int index)
     lv_img_set_src(face_img_, images[index]);
 }
 
+void LcdGc9107Display::SetShocked(int index)
+{
+    DisplayLockGuard lock(this);
+    if(face_img_==nullptr){
+        return;
+    } 
+    static const lv_img_dsc_t *images[] = {
+        &shocked1, &shocked2, &shocked3, &shocked4, &shocked5
+    };
+    if(current_face_count_ != sizeof(images) / sizeof(images[0]))
+        current_face_count_ = sizeof(images) / sizeof(images[0]);
+
+    lv_img_set_src(face_img_, images[index]);
+}
+
+void LcdGc9107Display::SetRelaxed(int index)
+{
+    DisplayLockGuard lock(this);
+    if(face_img_==nullptr){
+        return;
+    } 
+    static const lv_img_dsc_t *images[] = {
+        &relaxed1, &relaxed2, &relaxed3, 
+        &relaxed4, &relaxed5, &relaxed6
+    };
+    if(current_face_count_ != sizeof(images) / sizeof(images[0]))
+        current_face_count_ = sizeof(images) / sizeof(images[0]);
+
+    lv_img_set_src(face_img_, images[index]);
+}
+
+void LcdGc9107Display::SetThinking(int index)
+{
+    DisplayLockGuard lock(this);
+    if(face_img_==nullptr){
+        return;
+    } 
+    static const lv_img_dsc_t *images[] = {
+        &thinking1, &thinking2, &thinking3, 
+        &thinking4, &thinking5, &thinking6
+    };
+    if(current_face_count_ != sizeof(images) / sizeof(images[0]))
+        current_face_count_ = sizeof(images) / sizeof(images[0]);
+
+    lv_img_set_src(face_img_, images[index]);
+}
+
+void LcdGc9107Display::SetSleepy(int index)
+{
+    DisplayLockGuard lock(this);
+    if(face_img_==nullptr){
+        return;
+    } 
+    static const lv_img_dsc_t *images[] = {
+        &sleepy1, &sleepy2, &sleepy3, 
+        &sleepy4, &sleepy5
+    };
+    if(current_face_count_ != sizeof(images) / sizeof(images[0]))
+        current_face_count_ = sizeof(images) / sizeof(images[0]);
+
+    lv_img_set_src(face_img_, images[index]);
+}
+
+void LcdGc9107Display::SetCool(int index)
+{
+    DisplayLockGuard lock(this);
+    if(face_img_==nullptr){
+        return;
+    } 
+    static const lv_img_dsc_t *images[] = {
+        &cool1, &cool2, &cool3, 
+        &cool4, &cool5
+    };
+    if(current_face_count_ != sizeof(images) / sizeof(images[0]))
+        current_face_count_ = sizeof(images) / sizeof(images[0]);
+
+    lv_img_set_src(face_img_, images[index]);
+}
+
+void LcdGc9107Display::SetSurprised(int index)
+{
+    DisplayLockGuard lock(this);
+    if(face_img_==nullptr){
+        return;
+    } 
+    static const lv_img_dsc_t *images[] = {
+        &surprised1, &surprised2, &surprised3, 
+        &surprised4, &surprised5, &surprised6, &surprised7
+    };
+    if(current_face_count_ != sizeof(images) / sizeof(images[0]))
+        current_face_count_ = sizeof(images) / sizeof(images[0]);
+
+    lv_img_set_src(face_img_, images[index]);
+}
+
+void LcdGc9107Display::SetSilly(int index)
+{
+    DisplayLockGuard lock(this);
+    if(face_img_==nullptr){
+        return;
+    } 
+    static const lv_img_dsc_t *images[] = {
+        &silly1, &silly2, &silly3, 
+        &silly4, &silly5, &silly6
+    };
+    if(current_face_count_ != sizeof(images) / sizeof(images[0]))
+        current_face_count_ = sizeof(images) / sizeof(images[0]);
+
+    lv_img_set_src(face_img_, images[index]);
+}
+
+void LcdGc9107Display::SetLaughing(int index)
+{
+    DisplayLockGuard lock(this);
+    if(face_img_==nullptr){
+        return;
+    } 
+    static const lv_img_dsc_t *images[] = {
+        &laughing1, &laughing2, &laughing3, 
+        &laughing4, &laughing5, &laughing6
+    };
+    if(current_face_count_ != sizeof(images) / sizeof(images[0]))
+        current_face_count_ = sizeof(images) / sizeof(images[0]);
+
+    lv_img_set_src(face_img_, images[index]);
+}
+
+void LcdGc9107Display::SetConfused(int index)
+{
+    DisplayLockGuard lock(this);
+    if(face_img_==nullptr){
+        return;
+    } 
+    static const lv_img_dsc_t *images[] = {
+        &confused1, &confused2, &confused3, 
+        &confused4, &confused5, &confused6
+    };
+    if(current_face_count_ != sizeof(images) / sizeof(images[0]))
+        current_face_count_ = sizeof(images) / sizeof(images[0]);
+
+    lv_img_set_src(face_img_, images[index]);
+}
+
 void LcdGc9107Display::ShowFace(int index)
 {
     DisplayLockGuard lock(this);
@@ -475,10 +618,11 @@ void LcdGc9107Display::ShowFace(int index)
     } 
     switch(index)
     {
-        case HAPPY:
         case LAUGHING:
+            SetLaughing(current_face_index_);
+            break;
+        case HAPPY:
         case FUNNY:
-        case KISSY:
             SetHappy(current_face_index_);
             break;
         case SAD:
@@ -488,18 +632,41 @@ void LcdGc9107Display::ShowFace(int index)
             SetAngry(current_face_index_);
             break;
         case NEUTRAL:
-        case THINKING:
             SetIdle(current_face_index_);
+            break;
+        case THINKING:
+            SetThinking(current_face_index_);
             break;
         case CRYING:
             SetCrying(current_face_index_);
             break;
         case SLEEPY:
+            SetSleepy(current_face_index_);
+            break;
         case EMBARRAS:
             SetEmbarrass(current_face_index_);
             break;
         case LOVING:
+        case KISSY:
             SetLoving(current_face_index_);
+            break;
+        case SHOCKED:
+            SetShocked(current_face_index_);
+            break;
+        case RELAXED:
+            SetRelaxed(current_face_index_);
+            break;
+        case COOL:
+            SetCool(current_face_index_);
+            break;
+        case SURPRISE:
+            SetSurprised(current_face_index_);
+            break;
+        case SILLY:
+            SetSilly(current_face_index_);
+            break;
+        case CONFUSED:
+            SetConfused(current_face_index_);
             break;
         default:
             SetNeutral(current_face_index_);

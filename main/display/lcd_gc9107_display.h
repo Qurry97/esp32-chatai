@@ -58,6 +58,15 @@ protected:
     virtual void SetAngry(int index);
     virtual void SetLoving(int index);
     virtual void SetEmbarrass(int index);
+    virtual void SetShocked(int index);
+    virtual void SetRelaxed(int index);
+    virtual void SetThinking(int index);
+    virtual void SetSleepy(int index);
+    virtual void SetCool(int index);
+    virtual void SetSurprised(int index);
+    virtual void SetSilly(int index);
+    virtual void SetLaughing(int index);
+    virtual void SetConfused(int index);
     virtual bool Lock(int timeout_ms = 0) override;
     virtual void Unlock() override;
 

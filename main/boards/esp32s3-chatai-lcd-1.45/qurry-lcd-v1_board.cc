@@ -75,7 +75,7 @@ private:
     }
 
     void InitializePowerSaveTimer() {
-        power_save_timer_ = new PowerSaveTimer(-1, 150, 300);
+        power_save_timer_ = new PowerSaveTimer(-1, 150, 360);
         power_save_timer_->OnEnterSleepMode([this]() {
             ESP_LOGI(TAG, "Enabling sleep mode");
             display_->SetChatMessage("system", "");
