@@ -53,7 +53,7 @@ private:
     void ReadBatteryAdcData() {
         int adc_value;
         ESP_ERROR_CHECK(adc_oneshot_read(adc_handle_, ADC_CH, &adc_value));
-        printf("adc value:%d\n",adc_value);
+        ESP_LOGI("PowerManager","adc value:%d\n",adc_value);
         // 将 ADC 值添加到队列中
         adc_values_.push_back(adc_value);
         if (adc_values_.size() > kBatteryAdcDataCount) {
@@ -70,12 +70,12 @@ private:
             uint16_t adc;
             uint8_t level;
         } levels[] = {
-            {750, 0},
-            {810, 20},
-            {870, 40},
-            {930, 60},
-            {990, 80},
-            {1050, 100}
+            {1580, 0},
+            {1640, 20},
+            {1700, 40},
+            {1760, 60},
+            {1820, 80},
+            {1880, 100}
         };
 
         // 低于最低值时
