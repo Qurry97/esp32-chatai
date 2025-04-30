@@ -117,6 +117,14 @@ void Display::SetStatusHide(bool value) {
     }
 }
 
+bool Display::GetStatusHide() {
+    DisplayLockGuard lock(this);
+    if (status_bar_ == nullptr) {
+        return false;
+    }
+    return lv_obj_has_flag(status_bar_, LV_OBJ_FLAG_HIDDEN);
+}
+
 void Display::ShowNotification(const std::string &notification, int duration_ms) {
     ShowNotification(notification.c_str(), duration_ms);
 }

@@ -10,7 +10,8 @@
 #include <atomic>
 
 #define LOGO_TIMEOUT 130*1000    //us
-#define FACE_TIMEOUT 220*1000    //us
+#define FACE_TIMEOUT 250*1000    //us
+#define FACE_IDLE_TIMEOUT 1000*1000    //us
 enum {
     NEUTRAL =0,
     HAPPY,
@@ -85,6 +86,8 @@ public:
     int current_face_index_ =0;
     int current_face_count_ =0;
     int current_face_state_ =0;
+
+    int FACE_TIMEOUT_ =FACE_TIMEOUT;
 
     esp_timer_handle_t logo_timer_ = nullptr;
     esp_timer_handle_t face_timer_ = nullptr;

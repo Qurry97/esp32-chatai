@@ -21,6 +21,7 @@ public:
 
     virtual void SetStatus(const char* status);
     virtual void SetStatusHide(bool value);
+    virtual bool GetStatusHide();
     virtual void ShowNotification(const char* notification, int duration_ms = 3000);
     virtual void ShowNotification(const std::string &notification, int duration_ms = 3000);
     virtual void ShowPormpt(const char* label,int value);

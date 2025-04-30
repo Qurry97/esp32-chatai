@@ -142,9 +142,13 @@ void Application::CheckNewVersion() {
         if (ota_.HasActivationCode()) {
             // Activation code is valid
             SetDeviceState(kDeviceStateActivating);
-            ShowActivationCode();
-            display->ShowQrLabel(Lang::Strings::CONTRL_CONFIG_MODE);
+            display->SetFaceHide(true);
+            std::string hint = Lang::Strings::CONTRL_CONFIG_MODE;
+            hint += ota_.GetActivationCode();
+            hint += "\n\n";
+            display->ShowQrLabel(hint.c_str());
             display->SetQrHide(false,"https://xiaozhi.me/");
+            ShowActivationCode();
             // Check again in 30 seconds or until the device is idle
             for (int i = 0; i < 30; ++i) {
                 if (device_state_ == kDeviceStateIdle) {

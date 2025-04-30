@@ -206,8 +206,8 @@ void LcdGc9107Display::SetupUI() {
     lv_obj_set_flex_align(status_bar_, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
     lv_obj_clear_flag(status_bar_, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
     lv_obj_set_style_radius(status_bar_, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(status_bar_,lv_color_white() ,0);
-    lv_obj_set_style_bg_opa(status_bar_, 20, 0);
+    lv_obj_set_style_bg_color(status_bar_,lv_color_make(0x80, 0xb7, 0xf2),0);
+    lv_obj_set_style_bg_opa(status_bar_, 180, 0);
     lv_obj_set_size(status_bar_,  LV_HOR_RES*0.2,LV_VER_RES);
 
     network_label_ = lv_label_create(status_bar_);
@@ -322,12 +322,26 @@ void LcdGc9107Display::SetupUI() {
         .callback = [](void *arg) {
             LcdGc9107Display *display = static_cast<LcdGc9107Display*>(arg);
             DisplayLockGuard lock(display);
+            
             if(display->current_face_index_ <display->current_face_count_-1){
                 display->current_face_index_++;
                 display->ShowFace(display->current_face_state_);
             }else{
                 display->current_face_index_ = 0;
                 display->ShowFace(display->current_face_state_);
+            }
+            if(display->GetStatusHide()==false){
+                if(display->FACE_TIMEOUT_!=FACE_IDLE_TIMEOUT){
+                    esp_timer_stop(display->face_timer_);
+                    esp_timer_start_periodic(display->face_timer_, FACE_IDLE_TIMEOUT);
+                    display->FACE_TIMEOUT_ = FACE_IDLE_TIMEOUT;
+                }
+            }else{
+                if(display->FACE_TIMEOUT_!=FACE_TIMEOUT){
+                    esp_timer_stop(display->face_timer_);
+                    esp_timer_start_periodic(display->face_timer_, FACE_TIMEOUT);
+                    display->FACE_TIMEOUT_ = FACE_TIMEOUT;
+                }
             }
         },
         .arg = this,
